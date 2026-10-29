@@ -124,7 +124,7 @@ node scripts\servir-frontend.js
 
 Depois abra **http://localhost:5500**. O front roda na porta 5500 e a API na 8080 — origens
 diferentes, exatamente o cenário que exige o `CorsFilter`. Na tela você pode listar, cadastrar,
-editar e excluir, e o painel preto embaixo mostra o status HTTP de cada chamada.
+editar e excluir; abaixo do formulário aparece o status HTTP de cada operação (201, 204, 400…).
 
 > Também funciona abrindo o `frontend/index.html` direto (duplo clique), mas aí o navegador usa a
 > origem `file://`. O modo com `node` é o mais fiel ao que o professor pede.

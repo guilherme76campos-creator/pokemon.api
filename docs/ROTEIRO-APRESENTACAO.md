@@ -94,7 +94,8 @@ Abra `http://localhost:5500`.
 
 > “O front está na porta 5500 e a API na 8080 — **origens diferentes**. Pela política de mesma
 > origem o navegador bloquearia. O `CorsFilter` responde ao preflight `OPTIONS` e libera.
-> No painel embaixo aparecem os status de cada chamada, inclusive o `201` do cadastro.”
+> A mensagem abaixo do formulário mostra o status HTTP de cada operação (201 no cadastro,
+> 204 na exclusão).”
 
 Ações para demonstrar: cadastrar um pokémon, editar o nível, excluir.
 
