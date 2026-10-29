@@ -1,0 +1,24 @@
+# Blueprint do Render (https://render.com/docs/blueprint-spec)
+#
+# Como usar:
+#   1. suba o projeto no GitHub
+#   2. no Render: New + -> Blueprint -> escolha o repositorio
+#   3. o Render le este arquivo e cria o Web Service sozinho
+#
+# Sem variaveis de banco o projeto sobe com o H2 de demonstracao.
+# Para usar Oracle, cadastre em Environment (Dashboard do servico):
+#    DB_URL      = jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+#    DB_USER     = seu RM
+#    DB_PASSWORD = sua senha
+#
+# Observacao: NAO declare a variavel PORT aqui. O Render injeta a porta
+# dele automaticamente e a aplicacao ja le ${PORT}.
+
+services:
+  - type: web
+    name: pokedex-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /pokemon
+    autoDeploy: true

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokédex API - FIAP</title>
+<style>
+  :root {
+    --bg: #0f1220;
+    --card: #171b2e;
+    --card2: #1f2440;
+    --line: #2c3355;
+    --txt: #e8ecff;
+    --muted: #9aa4c7;
+    --red: #e3350d;
+    --green: #22c55e;
+    --yellow: #f5c518;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1200px 600px at 50% -200px, #232a4d 0%, var(--bg) 60%);
+    color: var(--txt);
+    min-height: 100vh;
+  }
+  header {
+    padding: 28px 24px 10px;
+    text-align: center;
+  }
+  .logo { display: inline-flex; align-items: center; gap: 14px; }
+  .pokeball {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: linear-gradient(to bottom, var(--red) 0 46%, #111 46% 54%, #f4f4f4 54% 100%);
+    border: 3px solid #111; position: relative; flex: none;
+    box-shadow: 0 0 24px rgba(227,53,13,.35);
+  }
+  .pokeball::after {
+    content: ""; position: absolute; inset: 0; margin: auto;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #f4f4f4; border: 3px solid #111;
+  }
+  h1 { margin: 0; font-size: 26px; letter-spacing: .5px; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 16px 24px 60px; }
+
+  .api-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px; margin-bottom: 18px;
+  }
+  .api-bar label { color: var(--muted); font-size: 13px; }
+  .api-bar input {
+    flex: 1; min-width: 240px; background: var(--bg); color: var(--txt);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; font-size: 13px;
+  }
+
+  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 18px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px;
+  }
+  .card h2 { margin: 0 0 14px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 5px; }
+  input, select {
+    width: 100%; background: var(--bg); color: var(--txt);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 11px; font-size: 14px;
+    font-family: inherit;
+  }
+  input:focus, select:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+  button {
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    border: none; border-radius: 8px; padding: 10px 14px; cursor: pointer;
+    transition: filter .15s, transform .05s;
+  }
+  button:hover { filter: brightness(1.12); }
+  button:active { transform: translateY(1px); }
+  .btn-primary { background: var(--red); color: #fff; width: 100%; margin-top: 16px; }
+  .btn-ghost { background: var(--card2); color: var(--txt); border: 1px solid var(--line); }
+  .btn-mini { padding: 6px 10px; font-size: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line);
+  }
+  td { padding: 10px; border-bottom: 1px solid #222846; }
+  tr:hover td { background: #1b2038; }
+  .cod { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: .3px;
+  }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
+  .dot.ok { background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .dot.err { background: var(--red); box-shadow: 0 0 10px var(--red); }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: 14px; }
+
+  #log {
+    margin-top: 18px; background: #0b0e18; border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px; font-family: Consolas, monospace;
+    font-size: 12px; color: #9fe8b1; max-height: 190px; overflow: auto; white-space: pre-wrap;
+  }
+  #log .req { color: #7aa2ff; }
+  #log .bad { color: #ff9a8a; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="pokeball"></div>
+    <div style="text-align:left">
+      <h1>Pokédex API</h1>
+      <div class="sub">Spring Boot + REST + CORS &mdash; FIAP</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="api-bar">
+    <label for="api">URL da API</label>
+    <input id="api" type="text" value="http://localhost:8080" spellcheck="false">
+    <button class="btn-ghost" onclick="salvarApi()">Salvar e recarregar</button>
+    <span class="status"><span id="dot" class="dot"></span><span id="statusTxt">verificando...</span></span>
+  </div>
+
+  <div class="grid">
+    <!-- FORMULÁRIO -->
+    <div class="card">
+      <h2 id="formTitulo">Cadastrar pokémon</h2>
+
+      <label for="nome">Nome</label>
+      <input id="nome" type="text" placeholder="Ex.: Eevee" maxlength="50">
+
+      <label for="tipo">Tipo</label>
+      <select id="tipo">
+        <option>Fogo</option><option>Água</option><option>Planta</option>
+        <option>Elétrico</option><option>Psíquico</option><option>Normal</option>
+        <option>Lutador</option><option>Veneno</option><option>Terra</option>
+        <option>Voador</option><option>Inseto</option><option>Pedra</option>
+        <option>Fantasma</option><option>Dragão</option><option>Aço</option>
+        <option>Fada</option><option>Sombrio</option><option>Gelo</option>
+      </select>
+
+      <label for="nivel">Nível (1 a 100)</label>
+      <input id="nivel" type="number" min="1" max="100" value="10">
+
+      <label for="dataCaptura">Data de captura (deve ser no passado)</label>
+      <input id="dataCaptura" type="date">
+
+      <button class="btn-primary" id="btnSalvar" onclick="salvar()">Cadastrar</button>
+      <button class="btn-ghost" style="width:100%;margin-top:8px" onclick="cancelarEdicao()">Limpar</button>
+
+      <div class="hint">
+        O navegador só consegue chamar esta API por causa do
+        <b>CorsFilter</b> (aula A44). Sem ele, apareceria o erro
+        <i>"blocked by CORS policy"</i> no console.
+      </div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="card">
+      <h2>Pokémons cadastrados (<span id="total">0</span>)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Cód.</th><th>Nome</th><th>Tipo</th><th>Nível</th><th>Captura</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="corpo"></tbody>
+      </table>
+      <div id="vazio" class="empty" style="display:none">Nenhum pokémon cadastrado.</div>
+    </div>
+  </div>
+
+  <div id="log"></div>
+</div>
+
+<script>
+  const CORES = {
+    "Fogo":"#ef4444","Água":"#3b82f6","Planta":"#22c55e","Elétrico":"#eab308",
+    "Psíquico":"#ec4899","Normal":"#a3a3a3","Lutador":"#f97316","Veneno":"#a855f7",
+    "Terra":"#b45309","Voador":"#818cf8","Inseto":"#84cc16","Pedra":"#78716c",
+    "Fantasma":"#6d28d9","Dragão":"#4338ca","Aço":"#64748b","Fada":"#f472b6",
+    "Sombrio":"#334155","Gelo":"#22d3ee"
+  };
+
+  let editando = null;      // codigo em edição
+  let listaAtual = [];      // último resultado do GET /pokemon
+
+  const $ = (id) => document.getElementById(id);
+
+  function apiBase() {
+    return ($("api").value || "http://localhost:8080").trim().replace(/\/+$/, "");
+  }
+
+  function salvarApi() {
+    localStorage.setItem("pokedex_api", apiBase());
+    log("URL da API alterada para " + apiBase(), false);
+    carregar();
+  }
+
+  function log(msg, erro) {
+    const el = $("log");
+    const hora = new Date().toLocaleTimeString("pt-BR");
+    const linha = document.createElement("div");
+    linha.className = erro ? "bad" : "req";
+    linha.textContent = `[${hora}] ${msg}`;
+    el.prepend(linha);
+  }
+
+  function marcarStatus(ok, texto) {
+    $("dot").className = "dot " + (ok ? "ok" : "err");
+    $("statusTxt").textContent = texto;
+  }
+
+  /** Chamada única para a API: devolve status HTTP + corpo já convertido. */
+  async function chamar(metodo, caminho, corpo) {
+    const url = apiBase() + caminho;
+    const opcoes = { method: metodo, headers: {} };
+    if (corpo) {
+      opcoes.headers["Content-Type"] = "application/json";
+      opcoes.body = JSON.stringify(corpo);
+    }
+    const resp = await fetch(url, opcoes);
+    let dados = null;
+    const texto = await resp.text();
+    if (texto) { try { dados = JSON.parse(texto); } catch { dados = texto; } }
+    log(`${metodo} ${caminho} -> ${resp.status} ${resp.statusText}`, !resp.ok);
+    return { status: resp.status, ok: resp.ok, dados };
+  }
+
+  function mostrarErro(dados) {
+    if (dados && dados.campos) {
+      return Object.entries(dados.campos).map(([k, v]) => `${k}: ${v}`).join(" | ");
+    }
+    if (dados && dados.mensagem) return dados.mensagem;
+    if (typeof dados === "string") return dados;
+    return "Erro ao chamar a API.";
+  }
+
+  async function carregar() {
+    try {
+      const r = await chamar("GET", "/pokemon");
+      marcarStatus(true, "API online (HTTP " + r.status + ")");
+
+      if (r.status === 404) { desenhar([]); return; }
+      if (!r.ok) { marcarStatus(false, "Erro HTTP " + r.status); return; }
+      desenhar(r.dados || []);
+    } catch (e) {
+      marcarStatus(false, "API offline");
+      log("Falha de rede: " + e.message + " (a API está rodando?)", true);
+      desenhar([]);
+    }
+  }
+
+  function desenhar(lista) {
+    listaAtual = lista;
+    const corpo = $("corpo");
+    corpo.innerHTML = "";
+    $("total").textContent = lista.length;
+    $("vazio").style.display = lista.length ? "none" : "block";
+
+    for (const p of lista) {
+      const tr = document.createElement("tr");
+      const cor = CORES[p.tipo] || "#64748b";
+      tr.innerHTML = `
+        <td class="cod">#${p.codigo}</td>
+        <td><b>${escapar(p.nome)}</b></td>
+        <td><span class="badge" style="background:${cor}22;color:${cor};border:1px solid ${cor}55">${escapar(p.tipo)}</span></td>
+        <td>${p.nivel}</td>
+        <td class="cod">${p.dataCaptura}</td>
+        <td style="text-align:right;white-space:nowrap">
+          <button class="btn-ghost btn-mini" onclick="editarPorCodigo(${p.codigo})">Editar</button>
+          <button class="btn-ghost btn-mini" onclick="apagar(${p.codigo})">Excluir</button>
+        </td>`;
+      corpo.appendChild(tr);
+    }
+  }
+
+  function escapar(txt) {
+    return String(txt).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  function coletar() {
+    return {
+      nome: $("nome").value.trim(),
+      tipo: $("tipo").value,
+      nivel: Number($("nivel").value),
+      dataCaptura: $("dataCaptura").value || null
+    };
+  }
+
+  async function salvar() {
+    const dados = coletar();
+
+    if (!dados.nome) { alert("Informe o nome do pokémon."); return; }
+    if (!dados.dataCaptura) { alert("Informe a data de captura."); return; }
+
+    try {
+      const r = editando
+        ? await chamar("PUT", "/pokemon/" + editando, dados)
+        : await chamar("POST", "/pokemon", dados);
+
+      if (r.status === 201) {
+        log((editando ? "Atualizado" : "Cadastrado") + " com sucesso: " + r.dados.nome, false);
+        cancelarEdicao();
+        carregar();
+      } else {
+        alert("A API recusou os dados (HTTP " + r.status + "):\n\n" + mostrarErro(r.dados));
+      }
+    } catch (e) {
+      alert("Falha de rede: " + e.message);
+    }
+  }
+
+  function editarPorCodigo(codigo) {
+    const p = listaAtual.find(item => item.codigo === codigo);
+    if (p) editar(p);
+  }
+
+  function editar(p) {
+    editando = p.codigo;
+    $("formTitulo").textContent = "Editando #" + p.codigo;
+    $("nome").value = p.nome;
+    $("tipo").value = p.tipo;
+    $("nivel").value = p.nivel;
+    $("dataCaptura").value = p.dataCaptura;
+    $("btnSalvar").textContent = "Salvar alterações";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelarEdicao() {
+    editando = null;
+    $("formTitulo").textContent = "Cadastrar pokémon";
+    $("btnSalvar").textContent = "Cadastrar";
+    $("nome").value = "";
+    $("nivel").value = 10;
+    $("dataCaptura").value = "";
+  }
+
+  async function apagar(codigo) {
+    if (!confirm("Excluir o pokémon #" + codigo + "?")) return;
+    try {
+      const r = await chamar("DELETE", "/pokemon/" + codigo);
+      if (r.status === 204) {
+        log("Pokémon #" + codigo + " excluído.", false);
+        carregar();
+      } else {
+        alert("Não foi possível excluir (HTTP " + r.status + ").");
+      }
+    } catch (e) {
+      alert("Falha de rede: " + e.message);
+    }
+  }
+
+  // ------------------------------ início ------------------------------
+  const salvo = localStorage.getItem("pokedex_api");
+  if (salvo) $("api").value = salvo;
+
+  // data padrão: ontem (regra: data de captura no passado)
+  const ontem = new Date();
+  ontem.setDate(ontem.getDate() - 1);
+  const isoLocal = ontem.getFullYear() + "-" +
+    String(ontem.getMonth() + 1).padStart(2, "0") + "-" +
+    String(ontem.getDate()).padStart(2, "0");
+  $("dataCaptura").value = isoLocal;
+
+  carregar();
+</script>
+</body>
+</html>
