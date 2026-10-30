@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +75,31 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 "Parametro invalido",
                 "O parametro '" + ex.getName() + "' deve ser um numero inteiro.",
+                null));
+    }
+
+    /** Content-Type errado ou ausente em POST/PUT (ex.: Insomnia sem o header JSON). */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErroResponse> tratarContentType(HttpMediaTypeNotSupportedException ex) {
+        System.err.println("[ERRO] Content-Type recebido: " + ex.getContentType());
+
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ErroResponse(
+                LocalDateTime.now(),
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+                "Content-Type nao suportado",
+                "Recebido: '" + ex.getContentType() + "'. Envie 'Content-Type: application/json' "
+                + "(no Insomnia: aba Body -> JSON e remova um Content-Type manual na aba Headers).",
+                null));
+    }
+
+    /** Verbo HTTP nao suportado na rota, ex.: PATCH /pokemon. */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErroResponse> tratarMetodoNaoSuportado(HttpRequestMethodNotSupportedException ex) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ErroResponse(
+                LocalDateTime.now(),
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                "Metodo nao suportado",
+                "Esta rota aceita: " + ex.getSupportedHttpMethods() + ".",
                 null));
     }
 
