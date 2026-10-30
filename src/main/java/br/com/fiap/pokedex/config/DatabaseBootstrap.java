@@ -18,15 +18,6 @@ import org.springframework.stereotype.Component;
 
 import br.com.fiap.pokedex.dao.ConnectionFactory;
 
-/**
- * Inicializacao do banco de DEMONSTRACAO (H2 em memoria, modo Oracle).
- *
- * - Se DB_URL aponta para o Oracle (aula A40), este componente nao faz nada:
- *   a tabela DDD_POKEMONS deve existir no Oracle (script sql/01_ddl_oracle.sql).
- * - Se nao existe DB_URL, o projeto sobe com H2 em memoria e este componente
- *   cria a tabela e insere alguns pokemons de exemplo, para a API ja responder
- *   com dados no primeiro teste.
- */
 @Component
 public class DatabaseBootstrap implements CommandLineRunner {
 
@@ -51,14 +42,12 @@ public class DatabaseBootstrap implements CommandLineRunner {
         }
     }
 
-    /** Le um arquivo .sql do classpath e executa comando por comando. */
     private void executarScript(String caminho) throws IOException, SQLException {
         String conteudo;
         try (InputStream in = new ClassPathResource(caminho).getInputStream()) {
             conteudo = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
 
-        // remove linhas de comentario (--) para nao quebrar a divisao por ";"
         String semComentarios = Arrays.stream(conteudo.split("\\R"))
                 .filter(linha -> !linha.trim().startsWith("--"))
                 .collect(Collectors.joining("\n"));

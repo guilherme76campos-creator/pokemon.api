@@ -10,18 +10,8 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-/**
- * TO = Transfer Object.
- *
- * Representa a entidade (tabela DDD_POKEMONS) e e o objeto que trafega entre
- * as camadas (Resource -> BO -> DAO) e entre a API e o cliente (JSON).
- *
- * As anotacoes de Bean Validation (aula A41) validam o JSON recebido antes
- * de o objeto chegar na regra de negocio.
- */
 public class PokemonTO {
 
-    /** Chave primaria (gerada pelo banco - NUMBER GENERATED ALWAYS AS IDENTITY). */
     private Long codigo;
 
     @NotBlank(message = "O nome do pokemon e obrigatorio")
@@ -40,10 +30,6 @@ public class PokemonTO {
     @Max(value = 100, message = "O nivel maximo e 100")
     private Integer nivel;
 
-    /**
-     * Regra de negocio da aula A40: a data de captura deve ser uma data no passado.
-     * O @Past faz a validacao automatica; o PokemonBO repete a regra (defesa em profundidade).
-     */
     @NotNull(message = "A data de captura e obrigatoria (formato AAAA-MM-DD)")
     @Past(message = "A data de captura deve ser uma data no passado")
     private LocalDate dataCaptura;

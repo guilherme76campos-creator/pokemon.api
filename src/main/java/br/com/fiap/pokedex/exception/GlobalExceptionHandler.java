@@ -17,20 +17,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import br.com.fiap.pokedex.bo.RegraNegocioException;
 
-/**
- * Tratamento global de erros.
- *
- * Sem esta classe o Spring devolveria 400 com um corpo enorme e tecnico.
- * Aqui traduzimos cada tipo de erro em um JSON simples, mantendo os status
- * codes do material:
- *   - Bean Validation / regra de negocio / JSON invalido -> 400 Bad Request
- *   - rota inexistente                                   -> 404 Not Found
- *   - qualquer erro inesperado                           -> 500 Internal Server Error
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /** Bean Validation: campos invalidos no JSON (aula A41). */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroResponse> tratarValidacao(MethodArgumentNotValidException ex) {
         Map<String, String> campos = new LinkedHashMap<>();
@@ -45,7 +34,6 @@ public class GlobalExceptionHandler {
                 campos));
     }
 
-    /** Regras de negocio do PokemonBO. */
     @ExceptionHandler(RegraNegocioException.class)
     public ResponseEntity<ErroResponse> tratarRegraNegocio(RegraNegocioException ex) {
         return ResponseEntity.badRequest().body(new ErroResponse(
@@ -56,7 +44,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** JSON malformado ou data em formato invalido (ex.: "dataCaptura": "ontem"). */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErroResponse> tratarJsonInvalido(HttpMessageNotReadableException ex) {
         return ResponseEntity.badRequest().body(new ErroResponse(
@@ -67,7 +54,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** Parametro de rota com tipo errado, ex.: GET /pokemon/abc. */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErroResponse> tratarTipoInvalido(MethodArgumentTypeMismatchException ex) {
         return ResponseEntity.badRequest().body(new ErroResponse(
@@ -78,7 +64,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** Content-Type errado ou ausente em POST/PUT (ex.: Insomnia sem o header JSON). */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErroResponse> tratarContentType(HttpMediaTypeNotSupportedException ex) {
         System.err.println("[ERRO] Content-Type recebido: " + ex.getContentType());
@@ -92,7 +77,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** Verbo HTTP nao suportado na rota, ex.: PATCH /pokemon. */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErroResponse> tratarMetodoNaoSuportado(HttpRequestMethodNotSupportedException ex) {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ErroResponse(
@@ -103,7 +87,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** Rota que nao existe, ex.: GET /pokemons. */
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErroResponse> tratarRotaInexistente(NoResourceFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErroResponse(
@@ -114,7 +97,6 @@ public class GlobalExceptionHandler {
                 null));
     }
 
-    /** Qualquer erro inesperado. */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroResponse> tratarErroInesperado(Exception ex) {
         System.err.println("[ERRO] " + ex.getClass().getName() + ": " + ex.getMessage());

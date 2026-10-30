@@ -1,8 +1,3 @@
--- ============================================================
--- Pokedex - dados de exemplo (H2 em memoria, MODE=Oracle)
--- Datas de captura sempre no PASSADO (regra de negocio da aula A40).
--- ============================================================
-
 INSERT INTO DDD_POKEMONS (NOME, TIPO, NIVEL, DATA_CAPTURA) VALUES ('Bulbasaur', 'Planta', 5, DATE '2024-03-10');
 INSERT INTO DDD_POKEMONS (NOME, TIPO, NIVEL, DATA_CAPTURA) VALUES ('Charmander', 'Fogo', 8, DATE '2024-05-22');
 INSERT INTO DDD_POKEMONS (NOME, TIPO, NIVEL, DATA_CAPTURA) VALUES ('Squirtle', 'Água', 7, DATE '2024-07-04');

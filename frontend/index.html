@@ -13,7 +13,6 @@
     padding: 24px;
   }
 
-  /* cabeçalho */
   header {
     max-width: 900px;
     margin: 0 auto 16px;
@@ -90,7 +89,6 @@
   tbody tr:nth-child(even) { background: #fafbff; }
   tbody tr:hover { background: #eef4ff; }
 
-  /* etiqueta do tipo */
   .tipo {
     display: inline-block;
     padding: 2px 9px;
@@ -100,7 +98,6 @@
     border: 1px solid transparent;
   }
 
-  /* mensagens */
   #msg { margin-top: 12px; font-size: 14px; padding: 8px 10px; border-radius: 6px; }
   #msg:empty { display: none; }
   #msg.ok { background: #e7f7ec; color: #0a7a2f; border: 1px solid #b7e4c7; }
@@ -116,7 +113,6 @@
   <p>API RESTful em Spring Boot &mdash; FIAP</p>
 </header>
 
-<!-- URL da API -->
 <div class="box">
   <label for="api">URL da API</label>
   <div class="linha">
@@ -129,7 +125,6 @@
   </div>
 </div>
 
-<!-- Formulário -->
 <div class="box">
   <h2 id="titulo">Novo pokémon</h2>
 
@@ -167,7 +162,6 @@
   <div id="msg"></div>
 </div>
 
-<!-- Lista -->
 <div class="box">
   <h2>Pokémons cadastrados (<span id="total">0</span>)</h2>
 
@@ -184,10 +178,9 @@
 </div>
 
 <script>
-  let editando = null;   // código do pokémon em edição
-  let lista = [];        // último resultado do GET /pokemon
+  let editando = null;
+  let lista = [];
 
-  // cor de cada tipo (só para deixar a etiqueta colorida)
   const CORES = {
     "Fogo": "#d9480f", "Água": "#1c7ed6", "Planta": "#2b8a3e", "Elétrico": "#c98a00",
     "Psíquico": "#c2255c", "Normal": "#6c757d", "Lutador": "#e8590c", "Veneno": "#7048e8",
@@ -213,7 +206,6 @@
     carregar();
   }
 
-  /** Chamada para a API: devolve status HTTP e corpo já convertido. */
   async function chamar(metodo, caminho, corpo) {
     const opcoes = { method: metodo, headers: {} };
     if (corpo) {
@@ -365,7 +357,6 @@
     }
   }
 
-  /** Data de ontem no formato AAAA-MM-DD (a captura precisa ser no passado). */
   function dataDeOntem() {
     const d = new Date();
     d.setDate(d.getDate() - 1);
@@ -374,7 +365,6 @@
       String(d.getDate()).padStart(2, "0");
   }
 
-  // ------------------------- início -------------------------
   const apiSalva = localStorage.getItem("pokedex_api");
   if (apiSalva) $("api").value = apiSalva;
 

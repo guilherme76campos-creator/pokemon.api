@@ -1,14 +1,3 @@
-# ============================================================================
-#  Pokedex API - teste automatizado de todos os endpoints
-#
-#  Uso:
-#     powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1
-#     powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://sua-api.onrender.com
-#
-#  O script sobe nenhuma API: ele apenas chama a API que ja esta rodando.
-#  Ao final mostra um resumo e devolve codigo 1 se algum teste falhar.
-# ============================================================================
-
 param(
     [string]$BaseUrl = "http://localhost:8080"
 )
@@ -80,7 +69,6 @@ function Novo-PokemonJson {
     return (@{ nome = $Nome; tipo = $Tipo; nivel = $Nivel; dataCaptura = $Data } | ConvertTo-Json -Compress)
 }
 
-# ---------------------------------------------------------------------------
 Write-Host ""
 Write-Host "=============================================================" -ForegroundColor Cyan
 Write-Host " POKEDEX API - teste dos endpoints" -ForegroundColor Cyan
@@ -90,12 +78,10 @@ Write-Host "=============================================================" -Fore
 $sufixo = Get-Random -Minimum 1000 -Maximum 9999
 $nomeTeste = "TesteMon$sufixo"
 
-# 1) GET /pokemon -----------------------------------------------------------
 Write-Host "`n[1] GET /pokemon (findAll)" -ForegroundColor Yellow
 $r = Invoke-Teste "GET" $api
 Checar "GET /pokemon" 200 $r -MostrarCorpo
 
-# 2) GET /pokemon/{codigo} --------------------------------------------------
 Write-Host "`n[2] GET /pokemon/{codigo} (findByCodigo)" -ForegroundColor Yellow
 $r = Invoke-Teste "GET" "$api/1"
 Checar "GET /pokemon/1" 200 $r -MostrarCorpo
@@ -103,7 +89,6 @@ Checar "GET /pokemon/1" 200 $r -MostrarCorpo
 $r = Invoke-Teste "GET" "$api/999999"
 Checar "GET /pokemon/999999 (nao existe)" 404 $r
 
-# 3) POST /pokemon ----------------------------------------------------------
 Write-Host "`n[3] POST /pokemon (save)" -ForegroundColor Yellow
 $corpo = Novo-PokemonJson $nomeTeste "Fogo" 25 "2025-03-15"
 $r = Invoke-Teste "POST" $api $corpo
@@ -115,27 +100,22 @@ if ($r.Status -eq 201 -and $r.Corpo) {
 }
 Write-Host ("          codigo criado: " + $novoCodigo) -ForegroundColor DarkGray
 
-# 3.1) POST invalido: data futura -------------------------------------------
 $corpo = Novo-PokemonJson "FuturoMon$sufixo" "Agua" 10 "2099-01-01"
 $r = Invoke-Teste "POST" $api $corpo
 Checar "POST /pokemon (data futura)" 400 $r -MostrarCorpo
 
-# 3.2) POST invalido: nivel fora da faixa -----------------------------------
 $corpo = Novo-PokemonJson "NivelMon$sufixo" "Agua" 150 "2025-01-01"
 $r = Invoke-Teste "POST" $api $corpo
 Checar "POST /pokemon (nivel 150)" 400 $r -MostrarCorpo
 
-# 3.3) POST invalido: nome repetido -----------------------------------------
 $corpo = Novo-PokemonJson $nomeTeste "Agua" 10 "2025-01-01"
 $r = Invoke-Teste "POST" $api $corpo
 Checar "POST /pokemon (nome repetido)" 400 $r -MostrarCorpo
 
-# 3.4) POST invalido: campo em branco ---------------------------------------
 $corpo = '{"nome":"","tipo":"Fogo","nivel":10,"dataCaptura":"2025-01-01"}'
 $r = Invoke-Teste "POST" $api $corpo
 Checar "POST /pokemon (nome vazio)" 400 $r -MostrarCorpo
 
-# 4) PUT /pokemon/{codigo} --------------------------------------------------
 Write-Host "`n[4] PUT /pokemon/{codigo} (update)" -ForegroundColor Yellow
 if ($novoCodigo) {
     $corpo = Novo-PokemonJson ($nomeTeste + "X") "Fogo" 30 "2025-03-16"
@@ -147,7 +127,6 @@ $corpo = Novo-PokemonJson "Inexistente$sufixo" "Fogo" 30 "2025-03-16"
 $r = Invoke-Teste "PUT" "$api/999999" $corpo
 Checar "PUT /pokemon/999999 (nao existe)" 404 $r
 
-# 5) DELETE /pokemon/{codigo} -----------------------------------------------
 Write-Host "`n[5] DELETE /pokemon/{codigo} (delete)" -ForegroundColor Yellow
 if ($novoCodigo) {
     $r = Invoke-Teste "DELETE" "$api/$novoCodigo"
@@ -157,7 +136,6 @@ if ($novoCodigo) {
     Checar "DELETE /pokemon/$novoCodigo (ja apagado)" 404 $r
 }
 
-# 6) Casos de erro de contrato ----------------------------------------------
 Write-Host "`n[6] Erros de contrato e CORS" -ForegroundColor Yellow
 $r = Invoke-Teste "GET" "$api/abc"
 Checar "GET /pokemon/abc (codigo invalido)" 400 $r -MostrarCorpo
@@ -178,7 +156,6 @@ else {
 }
 $script:total++
 
-# ---------------------------------------------------------------------------
 Write-Host ""
 Write-Host "=============================================================" -ForegroundColor Cyan
 if ($script:falhas -eq 0) {

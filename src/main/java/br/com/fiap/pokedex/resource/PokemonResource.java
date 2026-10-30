@@ -18,18 +18,6 @@ import br.com.fiap.pokedex.bo.PokemonBO;
 import br.com.fiap.pokedex.to.PokemonTO;
 import jakarta.validation.Valid;
 
-/**
- * Resource = camada REST (aulas A39 a A44).
- *
- * Expoe o endpoint /pokemon e traduz cada verbo HTTP em uma chamada ao BO.
- * Nao tem regra de negocio nem SQL: apenas orquestra e devolve o status correto.
- *
- *   GET    /pokemon           -> 200 OK        | 404 NOT FOUND (pokedex vazia)
- *   GET    /pokemon/{codigo}  -> 200 OK        | 404 NOT FOUND
- *   POST   /pokemon           -> 201 CREATED   | 400 BAD REQUEST
- *   PUT    /pokemon/{codigo}  -> 201 CREATED   | 400 BAD REQUEST | 404 NOT FOUND
- *   DELETE /pokemon/{codigo}  -> 204 NO CONTENT| 404 NOT FOUND
- */
 @RestController
 @RequestMapping("/pokemon")
 public class PokemonResource {
@@ -39,8 +27,6 @@ public class PokemonResource {
     public PokemonResource(PokemonBO bo) {
         this.bo = bo;
     }
-
-    // ------------------------------------------------------------------- GET
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PokemonTO>> findAll() {
@@ -62,8 +48,6 @@ public class PokemonResource {
         return ResponseEntity.ok(pokemon);
     }
 
-    // ------------------------------------------------------------------ POST
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
                  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PokemonTO> save(@RequestBody @Valid PokemonTO pokemon) {
@@ -75,8 +59,6 @@ public class PokemonResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
-    // ------------------------------------------------------------------- PUT
-
     @PutMapping(value = "/{codigo}",
                 consumes = MediaType.APPLICATION_JSON_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,11 +69,9 @@ public class PokemonResource {
         if (atualizado == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        // A aula A43 define 201 Created para atualizacao bem-sucedida.
+
         return ResponseEntity.status(HttpStatus.CREATED).body(atualizado);
     }
-
-    // ---------------------------------------------------------------- DELETE
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<String> delete(@PathVariable long codigo) {

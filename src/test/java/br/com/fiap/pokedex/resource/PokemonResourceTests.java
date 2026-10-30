@@ -23,10 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import br.com.fiap.pokedex.dao.PokemonDAO;
 import br.com.fiap.pokedex.to.PokemonTO;
 
-/**
- * Testes de integracao da API (sobem o contexto Spring completo + H2 em memoria).
- * Rodam com:  .\mvnw.cmd test
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 class PokemonResourceTests {
@@ -46,8 +42,6 @@ class PokemonResourceTests {
     private String nomeUnico() {
         return "Teste" + System.nanoTime();
     }
-
-    // ---------------------------------------------------------------- GET
 
     @Test
     @DisplayName("GET /pokemon deve retornar 200 e a lista de pokemons")
@@ -78,8 +72,6 @@ class PokemonResourceTests {
         mockMvc.perform(get("/pokemon/abc"))
                 .andExpect(status().isBadRequest());
     }
-
-    // --------------------------------------------------------------- POST
 
     @Test
     @DisplayName("POST /pokemon valido deve retornar 201")
@@ -147,8 +139,6 @@ class PokemonResourceTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------- PUT
-
     @Test
     @DisplayName("PUT /pokemon/{codigo} valido deve retornar 201")
     void updateValidoDeveRetornar201() throws Exception {
@@ -171,8 +161,6 @@ class PokemonResourceTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ------------------------------------------------------------- DELETE
-
     @Test
     @DisplayName("DELETE /pokemon/{codigo} deve retornar 204 e depois 404")
     void deleteDeveRetornar204EDepois404() throws Exception {
@@ -185,8 +173,6 @@ class PokemonResourceTests {
         mockMvc.perform(delete("/pokemon/" + pokemon.getCodigo()))
                 .andExpect(status().isNotFound());
     }
-
-    // --------------------------------------------------------------- CORS
 
     @Test
     @DisplayName("OPTIONS /pokemon (preflight) deve retornar 200 com cabecalhos CORS")

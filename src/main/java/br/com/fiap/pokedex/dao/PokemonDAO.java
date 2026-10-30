@@ -11,16 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import br.com.fiap.pokedex.to.PokemonTO;
 
-/**
- * DAO = Data Access Object (aulas A39 a A43).
- *
- * Unica camada que conversa com o banco. Nao conhece regra de negocio:
- * apenas executa o SQL e devolve objetos PokemonTO.
- *
- * Contrato seguido em todas as aulas:
- *  - em caso de sucesso devolve o dado (ou true);
- *  - em caso de falha devolve null (ou false).
- */
 @Repository
 public class PokemonDAO {
 
@@ -42,12 +32,6 @@ public class PokemonDAO {
     private static final String SQL_DELETE =
             "DELETE FROM DDD_POKEMONS WHERE CODIGO = ?";
 
-    // ---------------------------------------------------------------- findAll
-
-    /**
-     * A41: busca todos os registros no banco.
-     * @return lista de pokemons ou null em caso de erro de SQL.
-     */
     public List<PokemonTO> findAll() {
         List<PokemonTO> lista = new ArrayList<>();
 
@@ -66,12 +50,6 @@ public class PokemonDAO {
         }
     }
 
-    // ----------------------------------------------------------- findByCodigo
-
-    /**
-     * A41: busca um registro pela chave primaria.
-     * @return o pokemon encontrado ou null se nao existir / der erro.
-     */
     public PokemonTO findByCodigo(long codigo) {
         try (Connection con = ConnectionFactory.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(SQL_FIND_BY_CODIGO)) {
@@ -91,13 +69,6 @@ public class PokemonDAO {
         }
     }
 
-    // ------------------------------------------------------------------- save
-
-    /**
-     * A40: insere um novo registro. O CODIGO e gerado pelo banco (identity),
-     * por isso nao aparece na lista de colunas do INSERT.
-     * @return o pokemon com o codigo preenchido ou null em caso de falha.
-     */
     public PokemonTO save(PokemonTO pokemon) {
         try (Connection con = ConnectionFactory.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(SQL_INSERT, new String[] { "CODIGO" })) {
@@ -124,12 +95,6 @@ public class PokemonDAO {
         }
     }
 
-    // ----------------------------------------------------------------- update
-
-    /**
-     * A43: atualiza um registro existente.
-     * @return o pokemon atualizado ou null se o codigo nao existir / der erro.
-     */
     public PokemonTO update(PokemonTO pokemon) {
         try (Connection con = ConnectionFactory.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(SQL_UPDATE)) {
@@ -151,12 +116,6 @@ public class PokemonDAO {
         }
     }
 
-    // ----------------------------------------------------------------- delete
-
-    /**
-     * A42: apaga um registro pelo codigo.
-     * @return true se apagou, false se nao encontrou / deu erro.
-     */
     public boolean delete(long codigo) {
         try (Connection con = ConnectionFactory.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(SQL_DELETE)) {
@@ -170,12 +129,6 @@ public class PokemonDAO {
         }
     }
 
-    // ------------------------------------------------------------ apoio ao BO
-
-    /**
-     * Regra de negocio do BO: nao permitir dois pokemons com o mesmo nome.
-     * @param codigoIgnorado usado no update para nao comparar o registro com ele mesmo.
-     */
     public boolean existeNome(String nome, Long codigoIgnorado) {
         String sql = "SELECT COUNT(*) FROM DDD_POKEMONS WHERE UPPER(NOME) = UPPER(?)";
         if (codigoIgnorado != null) {
@@ -200,9 +153,6 @@ public class PokemonDAO {
         }
     }
 
-    // ---------------------------------------------------------------- mapping
-
-    /** Converte a linha atual do ResultSet em um PokemonTO. */
     private PokemonTO mapear(ResultSet rs) throws SQLException {
         PokemonTO pokemon = new PokemonTO();
         pokemon.setCodigo(rs.getLong("CODIGO"));

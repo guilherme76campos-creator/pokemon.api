@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.1.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>br.com.fiap</groupId>
 	<artifactId>pokedex-api</artifactId>
@@ -19,19 +19,17 @@
 	</properties>
 
 	<dependencies>
-		<!-- A39: modulo Web (API REST) -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
-		<!-- A41: Bean Validation (@NotBlank, @Past, @Min, ...) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- A39: DevTools (reinicia a aplicacao ao salvar o codigo) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -39,7 +37,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- A40: driver do banco Oracle -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc11</artifactId>
@@ -47,8 +44,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Banco de demonstracao (modo Oracle) usado quando nao ha Oracle configurado.
-		     Permite rodar o projeto no Render/local sem credenciais. Veja README. -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

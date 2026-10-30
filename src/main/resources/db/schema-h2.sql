@@ -1,8 +1,3 @@
--- ============================================================
--- Pokedex - tabela de demonstracao (H2 em memoria, MODE=Oracle)
--- Mesma estrutura do script Oracle (sql/01_ddl_oracle.sql).
--- ============================================================
-
 CREATE TABLE IF NOT EXISTS DDD_POKEMONS (
     CODIGO       NUMBER(10) GENERATED ALWAYS AS IDENTITY,
     NOME         VARCHAR2(50)  NOT NULL,

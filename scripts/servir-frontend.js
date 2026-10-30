@@ -1,15 +1,3 @@
-/**
- * Servidor estatico minimalista para o front-end da Pokedex.
- *
- * Serve a pasta ../frontend na porta 5500 (origem DIFERENTE da API, que roda
- * em 8080). E exatamente esse cenario que exige o CorsFilter da aula A44.
- *
- * Uso (na raiz do projeto):
- *    node scripts/servir-frontend.js
- *    depois abra http://localhost:5500
- *
- * Nao usa nenhuma dependencia: apenas o http/fs que ja vem no Node.
- */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -32,7 +20,6 @@ http.createServer((req, res) => {
   const relativo = url === "/" ? "index.html" : url.replace(/^\/+/, "");
   const arquivo = path.join(RAIZ, relativo);
 
-  // impede sair da pasta do front-end
   if (!arquivo.startsWith(RAIZ)) {
     res.writeHead(403).end("Acesso negado");
     return;
