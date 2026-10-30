@@ -93,7 +93,7 @@ Abra: **http://localhost:8080/pokemon**
 2. Menu da collection → **Import** → escolha `insomnia/pokedex-insomnia.json`
 3. Já vêm prontas as 5 requisições: `findAll`, `findByCodigo`, `save`, `update`, `delete`
 4. A URL base fica na variável de ambiente `base_url` (`http://localhost:8080`).
-   Para testar o deploy, troque por `https://sua-api.onrender.com`
+   Para testar o deploy, troque por `https://pokedex-api-uscw.onrender.com`
 
 ### 3.3 Arquivo `.http` (VS Code REST Client / IntelliJ HTTP Client)
 
@@ -113,7 +113,7 @@ Ele testa **16 casos** (sucesso e erro), mostra o status de cada um e termina co
 Para testar o deploy:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://sua-api.onrender.com
+powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://pokedex-api-uscw.onrender.com
 ```
 
 ### 3.5 Front-end (demonstra o CORS da aula A44)

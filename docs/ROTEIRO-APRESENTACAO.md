@@ -7,13 +7,13 @@ requisições**, podendo ser pelo Insomnia ou pelo front-end. Este roteiro cobre
 
 ## Antes de começar (5 minutos antes)
 
-- [ ] **Acorde a API no Render**: abra `https://sua-api.onrender.com/pokemon` no navegador.
+- [ ] **Acorde a API no Render**: abra `https://pokedex-api-uscw.onrender.com/pokemon` no navegador.
       No plano free ela “dorme”; a primeira chamada pode levar ~50 s. Faça isso antes da aula.
 - [ ] Deixe abertas as abas: API no navegador, Insomnia, `http://localhost:5500` (front).
 - [ ] Deixe o IntelliJ aberto na árvore de pacotes (`to`, `dao`, `bo`, `resource`).
 - [ ] Tenha o `README.md` e o `docs/CONCEITOS.md` à mão para consulta.
 - [ ] Rode uma vez o script para garantir que está tudo verde:
-      `powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://sua-api.onrender.com`
+      `powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://pokedex-api-uscw.onrender.com`
 
 ---
 
@@ -106,10 +106,10 @@ recarregue a página: o console do navegador mostra `blocked by CORS policy`. De
 
 ## 6. Deploy (2 min)
 
-Abra `https://sua-api.onrender.com/pokemon` no navegador e depois rode:
+Abra `https://pokedex-api-uscw.onrender.com/pokemon` no navegador e depois rode:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://sua-api.onrender.com
+powershell -ExecutionPolicy Bypass -File scripts\testar-api.ps1 -BaseUrl https://pokedex-api-uscw.onrender.com
 ```
 
 > “São 16 casos: sucesso e erro de todos os verbos, mais o preflight de CORS. Todos passaram
